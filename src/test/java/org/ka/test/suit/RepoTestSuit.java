@@ -1,22 +1,142 @@
 package org.ka.test.suit;
 
-public interface RepoTestSuit {
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.ka.fedor.api.Repositories;
+import org.ka.fedor.model.Node;
+import org.ka.fedor.repo.Repository;
 
-    void savePojo() throws Exception;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-    void saveListOfPojo() throws Exception;
+@RunWith(Parameterized.class)
+public class RepoTestSuit {
 
-    void addAndGetReference() throws Exception;
+    @Parameterized.Parameters
+    public static Collection<Object[]> repos() {
+        return Arrays.asList( new Object[][] {
+                { Repositories.inMemoryRepository().build() }
+        });
+    }
 
-    void addAndRemoveReference() throws Exception;
+    @Parameterized.Parameter
+    public Repository repo;
 
-    void addAndRemoveDetachedReference() throws Exception;
+    @Test
+    public void savePojo() throws IOException {
+        Person person = new Person(1, "Alex", "John");
 
-    void addReferenceThenCompareAndSet() throws Exception;
+        Node<Person> personNode = repo.put(person);
+        Person value = personNode.getValue();
 
-    void removeExistingNode() throws Exception;
+        Assert.assertEquals(person, value);
+    }
 
+    @Test
+    public void saveListOfPojo() throws IOException {
+        List<Person> persons = dummyPersons();
 
-    void removeNonExistingNode() throws Exception;
+        Node<List<Person>> personNode = repo.put(persons);
+        List<Person> value = personNode.getValue();
+
+        Assert.assertEquals(persons, value);
+    }
+
+    @Test
+    public void addAndGetReference() {
+        Person rootPerson = new Person(4, "John", "Smith");
+        Person childPerson = new Person(5, "Chris", "Walker");
+
+        Node<Person> rootNode = repo.put(rootPerson);
+        Node<Person> childNode = repo.put(childPerson);
+        rootNode.addReference(childNode);
+
+        Assert.assertEquals(1, rootNode.getImmutableReferences().size());
+        Assert.assertEquals(childNode, rootNode.getImmutableReferences().get(0));
+        Assert.assertEquals(childNode.getValue(), rootNode.getImmutableReferences().get(0).getValue());
+    }
+
+    @Test
+    public void addAndRemoveReference() {
+        Person rootPerson = new Person(6, "John", "Smith");
+        Person childPerson = new Person(7, "Chris", "Walker");
+
+        Node<Person> rootNode = repo.put(rootPerson);
+        Node<Person> childNode = repo.put(childPerson);
+        rootNode.addReference(childNode);
+
+        Assert.assertEquals(1, rootNode.getImmutableReferences().size());
+        Assert.assertEquals(childNode, rootNode.getImmutableReferences().get(0));
+        Assert.assertEquals(childNode.getValue(), rootNode.getImmutableReferences().get(0).getValue());
+
+        boolean removeResult = rootNode.removeReference(childNode);
+        Assert.assertTrue(removeResult);
+
+        Assert.assertTrue(rootNode.getImmutableReferences().isEmpty());
+    }
+
+    @Test
+    public void addAndRemoveDetachedReference() {
+        Person rootPerson = new Person(8, "John", "Smith");
+        Person childPerson = new Person(9, "Chris", "Walker");
+
+        Node<Person> rootNode = repo.put(rootPerson);
+        Node<Person> childNode = repo.put(childPerson);
+
+        boolean removeResult = rootNode.removeReference(childNode);
+        Assert.assertFalse(removeResult);
+
+        Assert.assertTrue(rootNode.getImmutableReferences().isEmpty());
+    }
+
+    @Test
+    public void addReferenceThenCompareAndSet() {
+        Person rootPerson = new Person(10, "John", "Smith");
+        Person childPerson = new Person(11, "Chris", "Walker");
+
+        Node<Person> rootNode = repo.put(rootPerson);
+        Node<Person> childNode = repo.put(childPerson);
+
+        rootNode.addReference(childNode);
+
+        Person newChildPerson = new Person(12, "John", "Smith");
+        Node<Person> newChildPersonNode = repo.put(newChildPerson);
+
+        boolean result = rootNode.compareAndSetReference(childNode, newChildPersonNode);
+        Assert.assertTrue(result);
+
+        Assert.assertEquals(1, rootNode.getImmutableReferences().size());
+        Assert.assertEquals(newChildPersonNode, rootNode.getImmutableReferences().get(0));
+        Assert.assertEquals(newChildPersonNode.getValue(), rootNode.getImmutableReferences().get(0).getValue());
+    }
+
+    @Test
+    public void removeExistingNode() {
+        Person person = new Person(23, "Ivan", "Drago");
+
+        Node<Person> personNode = repo.put(person);
+        Assert.assertTrue(repo.remove(personNode));
+    }
+
+    @Test
+    public void removeNonExistingNode() {
+        Person person = new Person(23, "Ivan", "Drago");
+
+        Node<Person> personNode = repo.put(person);
+        Assert.assertTrue(repo.remove(personNode));
+        Assert.assertFalse(repo.remove(personNode));
+    }
+
+    private List<Person> dummyPersons() {
+        return Arrays.asList(
+                new Person(1, "John", "Travolt"),
+                new Person(2, "Alex", "Sober"),
+                new Person(3, "Michael", "Black")
+        );
+    }
 
 }

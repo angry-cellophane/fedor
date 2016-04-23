@@ -4,10 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ka.fedor.api.Repositories;
-import org.ka.fedor.model.IdentityNode;
 import org.ka.fedor.model.Node;
-import org.ka.fedor.repo.InMemoryRepository;
-import org.ka.test.suit.Person;
+import org.ka.fedor.repo.Repository;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,7 +13,7 @@ import java.util.List;
 
 public class InMemoryRepoTest implements RepoTestSuit {
 
-    InMemoryRepository repo;
+    Repository repo;
 
     @Before
     public void setup() {
@@ -116,7 +114,7 @@ public class InMemoryRepoTest implements RepoTestSuit {
     public void removeExistingNode() {
         Person person = new Person(23, "Ivan", "Drago");
 
-        IdentityNode<Person> personNode = repo.put(person);
+        Node<Person> personNode = repo.put(person);
         Assert.assertTrue(repo.remove(personNode));
     }
 
@@ -124,7 +122,7 @@ public class InMemoryRepoTest implements RepoTestSuit {
     public void removeNonExistingNode() {
         Person person = new Person(23, "Ivan", "Drago");
 
-        IdentityNode<Person> personNode = repo.put(person);
+        Node<Person> personNode = repo.put(person);
         Assert.assertTrue(repo.remove(personNode));
         Assert.assertFalse(repo.remove(personNode));
     }

@@ -3,7 +3,7 @@ package org.ka.fedor.model;
 
 import java.util.*;
 
-public class SimpleNode<V> implements IdentityNode<V>{
+public class SimpleNode<V> implements Node<V> {
 
     private final UUID id;
     private final V value;

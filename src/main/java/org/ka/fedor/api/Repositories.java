@@ -1,7 +1,7 @@
 package org.ka.fedor.api;
 
 
-import org.ka.fedor.repo.InMemoryRepository;
+import org.ka.fedor.repo.Repository;
 import org.ka.fedor.repo.SimpleInMemoryRepository;
 
 public class Repositories {
@@ -21,7 +21,7 @@ public class Repositories {
         InMemoryRepositoryBuilder() {
         }
 
-        public InMemoryRepository build() {
+        public Repository build() {
             return new SimpleInMemoryRepository();
         }
     }

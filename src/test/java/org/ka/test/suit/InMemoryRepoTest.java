@@ -1,4 +1,4 @@
-package org.ka.test.integration;
+package org.ka.test.suit;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,47 +7,13 @@ import org.ka.fedor.api.Repositories;
 import org.ka.fedor.model.IdentityNode;
 import org.ka.fedor.model.Node;
 import org.ka.fedor.repo.InMemoryRepository;
+import org.ka.test.suit.Person;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-public class InMemoryRepoTest {
-
-    public static class Person {
-        private final long id;
-        private final String name;
-        private final String surname;
-
-        public Person(long id, String name, String surname) {
-            this.id = id;
-            this.name = name;
-            this.surname = surname;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Person person = (Person) o;
-
-            if (id != person.id) return false;
-            if (name != null ? !name.equals(person.name) : person.name != null) return false;
-            return surname != null ? surname.equals(person.surname) : person.surname == null;
-
-        }
-
-        @Override
-        public int hashCode() {
-            int result = (int) (id ^ (id >>> 32));
-            result = 31 * result + (name != null ? name.hashCode() : 0);
-            result = 31 * result + (surname != null ? surname.hashCode() : 0);
-            return result;
-        }
-    }
-
+public class InMemoryRepoTest implements RepoTestSuit {
 
     InMemoryRepository repo;
 

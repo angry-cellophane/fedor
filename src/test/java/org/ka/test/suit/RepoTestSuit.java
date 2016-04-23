@@ -1,5 +1,6 @@
 package org.ka.test.suit;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,8 @@ import org.ka.fedor.model.Node;
 import org.ka.fedor.repo.Repository;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -19,12 +22,18 @@ public class RepoTestSuit {
     @Parameterized.Parameters
     public static Collection<Object[]> repos() {
         return Arrays.asList( new Object[][] {
-                { Repositories.inMemoryRepository().build() }
+                { Repositories.inMemoryRepository().build() },
+                { Repositories.fileRepository().build() }
         });
     }
 
     @Parameterized.Parameter
     public Repository repo;
+
+    @AfterClass
+    public static void cleanup() throws IOException {
+        Files.delete(Paths.get("./data"));
+    }
 
     @Test
     public void savePojo() throws IOException {

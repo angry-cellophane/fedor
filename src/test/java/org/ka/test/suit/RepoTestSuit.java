@@ -9,6 +9,7 @@ import org.ka.fedor.api.Repositories;
 import org.ka.fedor.model.Node;
 import org.ka.fedor.repo.Repository;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +33,10 @@ public class RepoTestSuit {
 
     @AfterClass
     public static void cleanup() throws IOException {
-        Files.delete(Paths.get("./data"));
+        for (File file : Paths.get("data").toFile().listFiles()) {
+            System.out.println(file.getAbsoluteFile() + " = "+file.delete());
+        }
+        Files.delete(Paths.get("data"));
     }
 
     @Test

@@ -8,10 +8,12 @@ import org.ka.fedor.repo.file.FileBasedRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class Repositories {
 
@@ -62,7 +64,10 @@ public class Repositories {
                 }
             }
 
-            return new FileBasedRepository(dataDirPath);
+            return new FileBasedRepository(dataDirPath.toAbsolutePath().toString(),
+                    o -> ByteBuffer.wrap(new byte[] { (byte) 1, (byte) 2, (byte)3 }),
+                    b -> new Object()
+            );
         }
 
         private Path pathFromEnvVar() {

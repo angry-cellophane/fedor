@@ -6,15 +6,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class FileNode<T> implements Node<T> {
 
     private final UUID id;
     private final ArrayList<Node<?>> references;
     private final List<Node<?>> imReferences;
+    private final Supplier<T> valueSupplier;
 
-    public FileNode(UUID id) {
+    public FileNode(UUID id, Supplier<T> valueSupplier) {
         this.id = id;
+        this.valueSupplier = valueSupplier;
 
         this.references = new ArrayList<>();
         this.imReferences = Collections.unmodifiableList(references);
@@ -28,7 +31,7 @@ public class FileNode<T> implements Node<T> {
 
     @Override
     public T getValue() {
-        throw new NotImplementedException();
+        return valueSupplier.get();
     }
 
     @Override
@@ -48,6 +51,13 @@ public class FileNode<T> implements Node<T> {
 
     @Override
     public boolean compareAndSetReference(Node<?> expect, Node<?> update) {
-        throw new NotImplementedException();
+        for (int i = 0; i < references.size(); i++) {
+            Node<?> node = references.get(i);
+            if (node == expect) {
+                references.set(i, update);
+                return true;
+            }
+        }
+        return false;
     }
 }

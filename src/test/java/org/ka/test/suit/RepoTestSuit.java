@@ -20,27 +20,29 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class RepoTestSuit {
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> repos() {
         return Arrays.asList( new Object[][] {
-                { Repositories.inMemoryRepository().build() },
-                { Repositories.fileRepository().build() }
+                { "in memory", Repositories.inMemoryRepository().build() },
+                { "file", Repositories.fileRepository().build() }
         });
     }
 
-    @Parameterized.Parameter
+    @Parameterized.Parameter(value = 0)
+    public String testName;
+    @Parameterized.Parameter(value = 1)
     public Repository repo;
 
     @AfterClass
     public static void cleanup() throws IOException {
         for (File file : Paths.get("data").toFile().listFiles()) {
-            System.out.println(file.getAbsoluteFile() + " = "+file.delete());
+            System.out.println("delete " + file.getAbsoluteFile() + " = "+file.delete());
         }
         Files.delete(Paths.get("data"));
     }
 
     @Test
-    public void savePojo() throws IOException {
+    public void savePojoAndGetValueFromNode() throws IOException {
         Person person = new Person(1, "Alex", "John");
 
         Node<Person> personNode = repo.put(person);
@@ -49,15 +51,15 @@ public class RepoTestSuit {
         Assert.assertEquals(person, value);
     }
 
-    @Test
-    public void saveListOfPojo() throws IOException {
-        List<Person> persons = dummyPersons();
-
-        Node<List<Person>> personNode = repo.put(persons);
-        List<Person> value = personNode.getValue();
-
-        Assert.assertEquals(persons, value);
-    }
+//    @Test
+//    public void saveListOfPojo() throws IOException {
+//        List<Person> persons = dummyPersons();
+//
+//        Node<List<Person>> personNode = repo.put(persons);
+//        List<Person> value = personNode.getValue();
+//
+//        Assert.assertEquals(persons, value);
+//    }
 
     @Test
     public void addAndGetReference() {

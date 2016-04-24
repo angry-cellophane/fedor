@@ -5,9 +5,12 @@ import com.sun.javafx.runtime.SystemProperties;
 import org.ka.fedor.repo.Repository;
 import org.ka.fedor.repo.SimpleInMemoryRepository;
 import org.ka.fedor.repo.file.FileBasedRepository;
+import org.ka.fedor.serializer.SimpleDeserializer;
+import org.ka.fedor.serializer.SimpleSerializer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,8 +68,8 @@ public class Repositories {
             }
 
             return new FileBasedRepository(dataDirPath.toAbsolutePath().toString(),
-                    o -> ByteBuffer.wrap(new byte[] { (byte) 1, (byte) 2, (byte)3 }),
-                    b -> new Object()
+                    new SimpleSerializer(),
+                    new SimpleDeserializer()
             );
         }
 

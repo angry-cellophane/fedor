@@ -3,6 +3,7 @@ package org.ka.fedor.repo;
 import org.ka.fedor.model.Node;
 import org.ka.fedor.model.SimpleNode;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public class SimpleInMemoryRepository implements Repository {
     }
 
     @Override
-    public <T> Node<T> put(T object){
+    public <T extends Serializable> Node<T> put(T object){
         UUID id = UUID.randomUUID();
         SimpleNode<T> node = new SimpleNode<>(id, object);
         objects.put(id, node);
@@ -24,7 +25,7 @@ public class SimpleInMemoryRepository implements Repository {
     }
 
     @Override
-    public <T> boolean remove(Node<T> node) {
+    public <T extends Serializable> boolean remove(Node<T> node) {
         return objects.remove(node.getId()) != null;
     }
 }

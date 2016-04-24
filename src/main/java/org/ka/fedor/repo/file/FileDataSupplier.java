@@ -1,7 +1,6 @@
 package org.ka.fedor.repo.file;
 
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -14,14 +13,20 @@ public class FileDataSupplier<T> implements Supplier<T> {
 
     private final Path dataFilePath;
     private final Function<ByteBuffer, Object> fromBytes;
+    private final Supplier<Boolean> isAlive;
 
-    public FileDataSupplier(Path dataFilePath, Function<ByteBuffer, Object> fromBytes) {
+    public FileDataSupplier(Path dataFilePath,
+                            Function<ByteBuffer, Object> fromBytes,
+                            Supplier<Boolean>  isAlive) {
         this.dataFilePath = dataFilePath;
         this.fromBytes = fromBytes;
+        this.isAlive = isAlive;
     }
 
     @Override
     public T get() {
+        if (!isAlive.get()) throw new RuntimeException("Can't get the node value. The node was removed");
+
         try (RandomAccessFile file = new RandomAccessFile(dataFilePath.toFile(), "rw")) {
             try (FileChannel channel = file.getChannel()) {
                 ByteBuffer buffer = ByteBuffer.allocate((int) file.length());

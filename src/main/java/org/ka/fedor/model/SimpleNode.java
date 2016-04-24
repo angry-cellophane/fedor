@@ -2,6 +2,7 @@ package org.ka.fedor.model;
 
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class SimpleNode<V> implements Node<V> {
 
@@ -9,16 +10,20 @@ public class SimpleNode<V> implements Node<V> {
     private final V value;
     private final ArrayList<Node<?>> references;
     private final List<Node<?>> unmodReferences;
+    private final Supplier<Boolean> isAlive;
 
-    public SimpleNode(UUID id, V value) {
+    public SimpleNode(UUID id, V value, Supplier<Boolean> isAlive) {
         this.id = id;
         this.value = value;
+        this.isAlive = isAlive;
         references = new ArrayList<>();
         unmodReferences = Collections.unmodifiableList(references);
     }
 
     @Override
     public V getValue() {
+        if (!isAlive.get()) throw new RuntimeException("Can't get the node value. The node was removed");
+
         return value;
     }
 

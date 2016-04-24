@@ -45,7 +45,7 @@ public class FileBasedRepository implements Repository {
             throw new RuntimeException(e);
         }
 
-        FileNode<T> node = new FileNode<>(id, new FileDataSupplier<>(dataFilePath, fromBytes));
+        FileNode<T> node = new FileNode<>(id, new FileDataSupplier<>(dataFilePath, fromBytes, () -> nodes.containsKey(id)));
         nodes.put(id, node);
         return node;
     }

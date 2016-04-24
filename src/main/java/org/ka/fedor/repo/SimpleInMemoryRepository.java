@@ -19,7 +19,7 @@ public class SimpleInMemoryRepository implements Repository {
     @Override
     public <T extends Serializable> Node<T> put(T object){
         UUID id = UUID.randomUUID();
-        SimpleNode<T> node = new SimpleNode<>(id, object);
+        SimpleNode<T> node = new SimpleNode<>(id, object, () -> objects.containsKey(id));
         objects.put(id, node);
         return  node;
     }

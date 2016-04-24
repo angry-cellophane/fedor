@@ -13,9 +13,8 @@ class SimpleRepoScenarios extends Specification implements RepositoryTestUtils {
         expect:
         node.getValue() == object
         where:
-        repo              | object
-        repos['file']     | new Person(1, 'Alex', 'Rot')
-        repos['inMemory'] | new Person(1, 'Alex', 'Rot')
+        repo << repos.values()
+        object << [new Person(1, 'Alex', 'Rot')] * repos.size()
     }
 
 }

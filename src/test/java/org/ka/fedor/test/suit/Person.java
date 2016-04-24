@@ -1,4 +1,4 @@
-package org.ka.test.suit;
+package org.ka.fedor.test.suit;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package org.ka.test.big;
+package org.ka.fedor.test.big;
 
 import java.io.Serializable;
 import java.util.Arrays;

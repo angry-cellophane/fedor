@@ -1,4 +1,4 @@
-package org.ka.test.big;
+package org.ka.fedor.test.big;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -20,11 +20,15 @@ import java.util.Random;
 @RunWith(Parameterized.class)
 public class BigClassesTest {
 
+    private static final String DATA_DIR = "./data_BigClassesTest";
+
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> repos() {
+        new File(DATA_DIR).mkdir();
+
         return Arrays.asList( new Object[][] {
                 { "in memory", Repositories.inMemoryRepository().build() },
-                { "file", Repositories.fileRepository().build() }
+                { "file", Repositories.fileRepository().dataDirPath(DATA_DIR).build() }
         });
     }
 
@@ -35,10 +39,10 @@ public class BigClassesTest {
 
     @AfterClass
     public static void cleanup() throws IOException {
-        for (File file : Paths.get("data").toFile().listFiles()) {
+        for (File file : Paths.get(DATA_DIR).toFile().listFiles()) {
             System.out.println("delete " + file.getAbsoluteFile() + " = "+file.delete());
         }
-        Files.delete(Paths.get("data"));
+        Files.delete(Paths.get(DATA_DIR));
     }
 
 

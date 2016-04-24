@@ -1,8 +1,6 @@
-package org.ka.test.suit;
+package org.ka.fedor.test.suit;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.ka.fedor.api.Repositories;
@@ -20,11 +18,15 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class RepoTestSuit {
 
+    public static final String DATA_DIR = "./data_RepoTestSuit";
+
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> repos() {
+        new File(DATA_DIR).mkdir();
+
         return Arrays.asList( new Object[][] {
                 { "in memory", Repositories.inMemoryRepository().build() },
-                { "file", Repositories.fileRepository().build() }
+                { "file", Repositories.fileRepository().dataDirPath(DATA_DIR).build() }
         });
     }
 
@@ -35,10 +37,10 @@ public class RepoTestSuit {
 
     @AfterClass
     public static void cleanup() throws IOException {
-        for (File file : Paths.get("data").toFile().listFiles()) {
+        for (File file : Paths.get(DATA_DIR).toFile().listFiles()) {
             System.out.println("delete " + file.getAbsoluteFile() + " = "+file.delete());
         }
-        Files.delete(Paths.get("data"));
+        Files.delete(Paths.get(DATA_DIR));
     }
 
     @Test

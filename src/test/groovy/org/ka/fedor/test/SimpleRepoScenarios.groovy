@@ -48,4 +48,19 @@ class SimpleRepoScenarios extends Specification implements RepositoryTestUtils {
         secondRemoveExpectedResults << [ [false, false, false] ] * repos.size()
     }
 
+    @Unroll
+    def 'put a person and remove it then getting its value fails from #repo'() {
+        when:
+        def node = repo.put(person)
+        and:
+        repo.remove(node)
+        and:
+        node.getValue()
+        then:
+        thrown RuntimeException
+        where:
+        repo << repos.values()
+        person << [ new Person(36, 'Charles', 'Kane') ] * repos.size()
+    }
+
 }

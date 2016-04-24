@@ -6,10 +6,11 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FileDataSupplier<T> implements Supplier<T> {
+public class FileDataSupplier<T> implements Supplier<Optional<T>> {
 
     private final Path dataFilePath;
     private final Function<ByteBuffer, Object> fromBytes;
@@ -24,8 +25,8 @@ public class FileDataSupplier<T> implements Supplier<T> {
     }
 
     @Override
-    public T get() {
-        if (!isAlive.get()) throw new RuntimeException("Can't get the node value. The node was removed");
+    public Optional<T> get() {
+        if (!isAlive.get()) return Optional.empty();
 
         try (RandomAccessFile file = new RandomAccessFile(dataFilePath.toFile(), "rw")) {
             try (FileChannel channel = file.getChannel()) {
@@ -34,7 +35,7 @@ public class FileDataSupplier<T> implements Supplier<T> {
                 buffer.flip();
 
                 @SuppressWarnings("unchecked") T object = (T) fromBytes.apply(buffer);
-                return object;
+                return Optional.of(object);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

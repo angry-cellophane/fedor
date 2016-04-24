@@ -1,11 +1,6 @@
 package org.ka.fedor.model;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class FileNode<T> implements Node<T> {
@@ -13,9 +8,9 @@ public class FileNode<T> implements Node<T> {
     private final UUID id;
     private final ArrayList<Node<?>> references;
     private final List<Node<?>> imReferences;
-    private final Supplier<T> valueSupplier;
+    private final Supplier<Optional<T>> valueSupplier;
 
-    public FileNode(UUID id, Supplier<T> valueSupplier) {
+    public FileNode(UUID id, Supplier<Optional<T>> valueSupplier) {
         this.id = id;
         this.valueSupplier = valueSupplier;
 
@@ -30,7 +25,7 @@ public class FileNode<T> implements Node<T> {
     }
 
     @Override
-    public T getValue() {
+    public Optional<T> getValue() {
         return valueSupplier.get();
     }
 

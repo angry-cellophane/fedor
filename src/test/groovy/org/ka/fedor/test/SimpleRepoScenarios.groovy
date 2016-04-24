@@ -10,8 +10,12 @@ class SimpleRepoScenarios extends Specification implements RepositoryTestUtils {
     def 'put a person and get its value from #repo'() {
         given:
         def node = repo.put(object)
-        expect:
-        node.getValue() == object
+        when:
+        def value = node.value
+        then:
+        value.isPresent() == true
+        and:
+        value.get() == object
         where:
         repo << repos.values()
         object << [new Person(1, 'Alex', 'Rot')] * repos.size()
@@ -21,8 +25,12 @@ class SimpleRepoScenarios extends Specification implements RepositoryTestUtils {
     def 'put several persons and get their values from #repo'() {
         given:
         def nodes = persons.collect { repo.put(it) }
-        expect:
-        nodes*.getValue() == persons
+        when:
+        def values = nodes*.getValue()
+        then:
+        values*.isPresent() == ([true] * values.size())
+        and:
+        values*.get() == persons
         where:
         repo << repos.values()
         persons << [ [new Person(24, 'Alex', 'Rot'), new Person(25, 'Bob', 'Kelso'), new Person(26, 'John', 'Dorian')] ] * repos.size()
@@ -55,9 +63,11 @@ class SimpleRepoScenarios extends Specification implements RepositoryTestUtils {
         and:
         repo.remove(node)
         and:
-        node.getValue()
+        def value = node.getValue()
         then:
-        thrown RuntimeException
+        value.isPresent() ==  false
+        and:
+        notThrown RuntimeException
         where:
         repo << repos.values()
         person << [ new Person(36, 'Charles', 'Kane') ] * repos.size()

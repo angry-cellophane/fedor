@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Random;
 
 @RunWith(Parameterized.class)
@@ -66,7 +67,9 @@ public class BigClassesTest {
         BigIntArray bigObject = new BigIntArray(array1, array2);
 
         Node<BigIntArray> node = repo.put(bigObject);
-        BigIntArray value = node.getValue();
+        Optional<BigIntArray> actualValue = node.getValue();
+        Assert.assertTrue(actualValue.isPresent());
+        BigIntArray value = actualValue.get();
         Assert.assertEquals(bigObject, value);
     }
 

@@ -21,10 +21,8 @@ public class SimpleNode<V> implements Node<V> {
     }
 
     @Override
-    public V getValue() {
-        if (!isAlive.get()) throw new RuntimeException("Can't get the node value. The node was removed");
-
-        return value;
+    public Optional<V> getValue() {
+        return isAlive.get() ? Optional.of(value) : Optional.empty();
     }
 
     @Override

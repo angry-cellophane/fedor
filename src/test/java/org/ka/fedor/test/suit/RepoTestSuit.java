@@ -1,6 +1,8 @@
 package org.ka.fedor.test.suit;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.ka.fedor.api.Repositories;
@@ -14,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(Parameterized.class)
 public class RepoTestSuit {
@@ -48,20 +51,12 @@ public class RepoTestSuit {
         Person person = new Person(1, "Alex", "John");
 
         Node<Person> personNode = repo.put(person);
-        Person value = personNode.getValue();
+        Optional<Person> actualValue = personNode.getValue();
+        Assert.assertTrue(actualValue.isPresent());
+        Person value = actualValue.get();
 
         Assert.assertEquals(person, value);
     }
-
-//    @Test
-//    public void saveListOfPojo() throws IOException {
-//        List<Person> persons = dummyPersons();
-//
-//        Node<List<Person>> personNode = repo.put(persons);
-//        List<Person> value = personNode.getValue();
-//
-//        Assert.assertEquals(persons, value);
-//    }
 
     @Test
     public void addAndGetReference() {

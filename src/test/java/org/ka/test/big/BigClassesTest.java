@@ -43,9 +43,21 @@ public class BigClassesTest {
 
 
     @Test
+    public void putClassWithBigIntArrays() {
+        int[] array1 = createDummyIntArray(4_000_000);
+        int[] array2 = createDummyIntArray(7_000_000);
+
+        BigIntArray bigObject = new BigIntArray(array1, array2);
+
+        Node<BigIntArray> node = repo.put(bigObject);
+        Assert.assertNotNull(node);
+        Assert.assertNotNull(node.getId());
+    }
+
+    @Test
     public void putClassWithBigIntArraysAndGetNodeValue() {
         int[] array1 = createDummyIntArray(4_000_000);
-        int[] array2 = createDummyIntArray(4_000_000);
+        int[] array2 = createDummyIntArray(7_000_000);
 
         BigIntArray bigObject = new BigIntArray(array1, array2);
 

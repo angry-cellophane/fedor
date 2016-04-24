@@ -28,4 +28,9 @@ public class SimpleInMemoryRepository implements Repository {
     public <T extends Serializable> boolean remove(Node<T> node) {
         return objects.remove(node.getId()) != null;
     }
+
+    @Override
+    public String toString() {
+        return "non-thread safe in-memory repository";
+    }
 }

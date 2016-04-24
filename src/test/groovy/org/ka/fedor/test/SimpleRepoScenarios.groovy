@@ -7,15 +7,15 @@ import spock.lang.Unroll
 class SimpleRepoScenarios extends Specification implements RepositoryTestUtils {
 
     @Unroll
-    def 'simple test for #repoName repo'() {
+    def 'simple test for #repo'() {
         given:
         def node = repo.put(object)
         expect:
         node.getValue() == object
         where:
-        repoName   | repo              | object
-        'file'     | repos['file']     | new Person(1, 'Alex', 'Rot')
-        'inMemory' | repos['inMemory'] | new Person(1, 'Alex', 'Rot')
+        repo              | object
+        repos['file']     | new Person(1, 'Alex', 'Rot')
+        repos['inMemory'] | new Person(1, 'Alex', 'Rot')
     }
 
 }

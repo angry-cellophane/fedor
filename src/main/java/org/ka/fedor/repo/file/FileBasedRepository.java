@@ -72,4 +72,9 @@ public class FileBasedRepository implements Repository {
     public <T extends Serializable> boolean remove(Node<T> node) {
         return nodes.remove(node.getId()) != null;
     }
+
+    @Override
+    public String toString() {
+        return "non-thread safe file based repository";
+    }
 }

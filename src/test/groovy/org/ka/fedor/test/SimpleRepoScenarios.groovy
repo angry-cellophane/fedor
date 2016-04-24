@@ -28,6 +28,24 @@ class SimpleRepoScenarios extends Specification implements RepositoryTestUtils {
         persons << [ [new Person(24, 'Alex', 'Rot'), new Person(25, 'Bob', 'Kelso'), new Person(26, 'John', 'Dorian')] ] * repos.size()
     }
 
-
+    @Unroll
+    def 'put and remove nodes one by one from #repo'() {
+        given:
+        def firstRemoveActualResults = []
+        when:
+        def nodes = persons.collect { p ->
+            def node = repo.put(p)
+            firstRemoveActualResults << repo.remove(node)
+            node
+        }
+        then:
+        firstRemoveActualResults == firstRemoveExpectedResults
+        nodes.collect { repo.remove(it) } == secondRemoveExpectedResults
+        where:
+        repo << repos.values()
+        persons << [ [new Person(34, 'Alex', 'Rot'), new Person(35, 'Bob', 'Kelso'), new Person(36, 'John', 'Dorian')] ] * repos.size()
+        firstRemoveExpectedResults << [ [true, true, true] ] * repos.size()
+        secondRemoveExpectedResults << [ [false, false, false] ] * repos.size()
+    }
 
 }

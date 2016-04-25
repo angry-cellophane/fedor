@@ -9,6 +9,7 @@ trait RepositoryTestUtils {
 
         [
                 inMemory: Repositories.inMemoryRepository().build(),
+                concurrentInMemory: Repositories.concurrentInMemoryRepository().build(),
                 file    : Repositories.fileRepository().dataDirPath("./data_${this.class.simpleName}").build()
         ]
     }.call()

@@ -1,6 +1,8 @@
 package org.ka.fedor.serializer.memory;
 
 
+import java.lang.reflect.Field;
+
 public interface MemoryManager {
     int getInt(Object object, long offset);
     long getLong(Object object, long offset);
@@ -9,4 +11,5 @@ public interface MemoryManager {
     double getDouble(Object object, long offset);
     char getChar(Object object, long offset);
     boolean getBoolean(Object object, long offset);
+    long objectFieldOffset(Field field);
 }

@@ -3,6 +3,7 @@ package org.ka.fedor.serializer.v1.extractor;
 
 import org.ka.fedor.serializer.memory.MemoryManager;
 
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 
 public class FieldExtractors {
@@ -101,6 +102,33 @@ public class FieldExtractors {
         }
     }
 
+
+    public static FieldExtractor create(Field field, MemoryManager memoryManager) {
+        long offset = memoryManager.objectFieldOffset(field);
+
+        Class<?> type = field.getType();
+        if (!type.isPrimitive()) {
+            throw new RuntimeException("Not supported yet");
+        }
+
+        if (type == Short.TYPE) {
+            return new ShortExtractor(memoryManager, offset);
+        } else if (type == Integer.TYPE) {
+            return new IntExtractor(memoryManager, offset);
+        } else if (type == Long.TYPE) {
+            return new LongExtractor(memoryManager, offset);
+        } else if (type == Float.TYPE) {
+            return new FloatExtractor(memoryManager, offset);
+        } else if (type == Double.TYPE) {
+            return new DoubleExtractor(memoryManager, offset);
+        } else if (type == Character.TYPE) {
+            return new CharExtractor(memoryManager, offset);
+        } else if (type == Boolean.TYPE) {
+            return new BooleanExtractor(memoryManager, offset);
+        }
+
+        throw new IllegalArgumentException("Unknown type: "+type);
+    }
 
     private FieldExtractors(){}
 }

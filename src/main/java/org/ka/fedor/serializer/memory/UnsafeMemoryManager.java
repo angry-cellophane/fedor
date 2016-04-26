@@ -55,4 +55,9 @@ public class UnsafeMemoryManager implements MemoryManager {
     public boolean getBoolean(Object object, long offset) {
         return U.getBoolean(object, offset);
     }
+
+    @Override
+    public long objectFieldOffset(Field field) {
+        return U.objectFieldOffset(field);
+    }
 }

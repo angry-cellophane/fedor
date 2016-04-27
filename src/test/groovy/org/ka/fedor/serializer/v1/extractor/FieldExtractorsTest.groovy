@@ -4,6 +4,7 @@ import org.ka.fedor.serializer.memory.MemoryManager
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.lang.reflect.Field
 import java.nio.ByteBuffer
 
 class FieldExtractorsTest extends Specification {
@@ -18,21 +19,25 @@ class FieldExtractorsTest extends Specification {
         boolean boolValue;
     }
 
+    static Field getField(String fieldName) {
+        Pojo.class.getDeclaredField(fieldName)
+    }
+
     @Unroll
     def 'create field extractor of the #expectedClass type'() {
         when:
-        def extractor = FieldExtractors.create(field, [objectFieldOffset: { x -> 1l }] as MemoryManager)
+        def extractor = FieldExtractors.create(getField(fieldName), [objectFieldOffset: { x -> 1l }] as MemoryManager)
         then:
         extractor.class == expectedClass
         where:
-        field                                     | expectedClass
-        Pojo.class.getDeclaredField('shortValue') | FieldExtractors.ShortExtractor.class
-        Pojo.class.getDeclaredField('intValue') | FieldExtractors.IntExtractor.class
-        Pojo.class.getDeclaredField('longValue') | FieldExtractors.LongExtractor.class
-        Pojo.class.getDeclaredField('floatValue') | FieldExtractors.FloatExtractor.class
-        Pojo.class.getDeclaredField('doubleValue') | FieldExtractors.DoubleExtractor.class
-        Pojo.class.getDeclaredField('charValue') | FieldExtractors.CharExtractor.class
-        Pojo.class.getDeclaredField('boolValue') | FieldExtractors.BooleanExtractor.class
+        fieldName     | expectedClass
+        'shortValue'  | FieldExtractors.ShortExtractor.class
+        'intValue'    | FieldExtractors.IntExtractor.class
+        'longValue'   | FieldExtractors.LongExtractor.class
+        'floatValue'  | FieldExtractors.FloatExtractor.class
+        'doubleValue' | FieldExtractors.DoubleExtractor.class
+        'charValue'   | FieldExtractors.CharExtractor.class
+        'boolValue'   | FieldExtractors.BooleanExtractor.class
     }
 
     @Unroll
